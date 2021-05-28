@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MergeSortAsync
 {
@@ -12,12 +13,12 @@ namespace MergeSortAsync
                 .Select(int.Parse)
                 .ToArray();
 
-            var sortedArray = MergeSort(array);
+            var sortedArray = MergeSort(array).Result;
 
             Console.WriteLine(string.Join(" ", sortedArray));
         }
 
-        private static int[] MergeSort(int[] a)
+        private static async Task<int[]> MergeSort(int[] a)
         {
             var n = a.Length;
 
@@ -50,8 +51,8 @@ namespace MergeSortAsync
                 right[j++] = a[i];
             }
 
-            left = MergeSort(left);
-            right = MergeSort(right);
+            left = await MergeSort(left);
+            right = await MergeSort(right);
 
             return Merge(left, right);
         }
