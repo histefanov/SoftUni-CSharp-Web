@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
 using System.Text;
+using MyWebServer.Server.Http;
 
 namespace MyWebServer.Server
 {
@@ -28,8 +29,10 @@ namespace MyWebServer.Server
 
                 var networkStream = connection.GetStream();
 
-                var request = await this.ReadRequest(networkStream);
-                Console.WriteLine(request.ToString());
+                var requestText = await this.ReadRequest(networkStream);
+                Console.WriteLine(requestText);
+
+                var request = HttpRequest.Parse(requestText);
 
                 await this.WriteResponse(networkStream);
 
