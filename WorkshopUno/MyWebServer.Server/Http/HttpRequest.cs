@@ -58,7 +58,7 @@ namespace MyWebServer.Server.Http
 
             foreach (var headerLine in headerLines)
             {
-                if (headerLine != Environment.NewLine)
+                if (!String.IsNullOrWhiteSpace(headerLine))
                 {
                     var headerTokens = headerLine.Split
                         (new[] { ": " },

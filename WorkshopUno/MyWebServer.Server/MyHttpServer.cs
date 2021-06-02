@@ -32,6 +32,7 @@ namespace MyWebServer.Server
                 var requestText = await this.ReadRequest(networkStream);
                 Console.WriteLine(requestText);
 
+                
                 var request = HttpRequest.Parse(requestText);
 
                 await this.WriteResponse(networkStream);
