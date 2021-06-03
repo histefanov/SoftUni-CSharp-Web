@@ -61,7 +61,7 @@ namespace MyWebServer.Server.Http
                 if (!String.IsNullOrWhiteSpace(headerLine))
                 {
                     var headerTokens = headerLine.Split
-                        (new[] { ": " },
+                        (new[] { ":" },
                         StringSplitOptions.None);
 
                     var header = new HttpHeader
