@@ -17,11 +17,9 @@ namespace MyWebServer.Server.Http
 
         public static HttpRequest Parse(string request)
         {
-            string[] lines = request.Split(
-                new[] { Environment.NewLine },
-                StringSplitOptions.None);
+            var lines = request.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            var firstLine = lines[0].Split();
+            var firstLine = lines.First().Split(new[] { " " }, StringSplitOptions.None);
 
             var method = ParseHttpMethod(firstLine[0]);
             var url = firstLine[1];

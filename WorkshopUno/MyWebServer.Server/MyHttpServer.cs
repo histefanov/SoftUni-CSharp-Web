@@ -55,6 +55,11 @@ namespace MyWebServer.Server
 
                 totalBytesRead += bytesRead;
 
+                if (totalBytesRead > 10 * 1024)
+                {
+                    throw new InvalidOperationException("Request is too large.");
+                }
+
                 requestBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
             }
 
@@ -63,13 +68,21 @@ namespace MyWebServer.Server
 
         private async Task WriteResponse(NetworkStream networkStream)
         {
-            var content = "Hi от Християн!";
+            var content = @"
+<html>
+    <head>
+        <link rel=""icon"" href=""data:,"">
+    </head>
+    <body>
+        <h2>Hi от Християн!</h2>
+    </body>
+</html>";
             var contentLength = Encoding.UTF8.GetByteCount(content);
 
             var response = $@"HTTP/1.1 200 OK
 Date: {DateTime.UtcNow:r}
 Content-Length: {contentLength}
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/html; charset=UTF-8
 
 {content}";
 
