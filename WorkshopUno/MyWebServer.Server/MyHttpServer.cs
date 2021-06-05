@@ -32,7 +32,7 @@ namespace MyWebServer.Server
                 var requestText = await this.ReadRequest(networkStream);
                 Console.WriteLine(requestText);
                 
-                var request = HttpRequest.Parse(requestText);
+                // var request = HttpRequest.Parse(requestText);
 
                 await this.WriteResponse(networkStream);
 
@@ -49,7 +49,7 @@ namespace MyWebServer.Server
 
             var totalBytesRead = 0;
 
-            while (networkStream.DataAvailable)
+            do
             {
                 var bytesRead = await networkStream.ReadAsync(buffer, 0, buffer.Length);
 
@@ -62,6 +62,7 @@ namespace MyWebServer.Server
 
                 requestBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
             }
+            while (networkStream.DataAvailable);
 
             return requestBuilder.ToString();
         }

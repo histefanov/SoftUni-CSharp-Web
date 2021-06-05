@@ -4,8 +4,13 @@ using System.Text;
 
 namespace MyWebServer.Server.Http
 {
-    public class HttpResponse
+    public abstract class HttpResponse
     {
+        public HttpResponse(HttpStatusCode statusCode)
+        {
+            this.StatusCode = statusCode;
+        }
+
         public HttpStatusCode StatusCode { get; private set; }
 
         public HttpHeaderCollection Headers { get; } = new HttpHeaderCollection();
