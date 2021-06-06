@@ -4,17 +4,32 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Text;
 using MyWebServer.Server.Http;
+using MyWebServer.Server.Routing;
 
 namespace MyWebServer.Server
 {
     public class MyHttpServer
     {
         private readonly TcpListener listener;
+        private readonly IPAddress ipAddress;
+        private readonly int port;
 
-        public MyHttpServer(string ipAddress, int port)
+        public MyHttpServer(string ipAddress, int port, Action<IRoutingTable> routingTable)
         {
-            this.listener = new TcpListener(
-                IPAddress.Parse(ipAddress), port);
+            this.ipAddress = IPAddress.Parse(ipAddress);
+            this.port = port;
+
+            this.listener = new TcpListener(this.ipAddress, this.port);
+        }
+
+        public MyHttpServer(int port, Action<IRoutingTable> routingTable)
+            : this("127.0.0.1", port, routingTable)
+        {
+        }
+
+        public MyHttpServer(Action<IRoutingTable> routingTable)
+            : this(5000, routingTable)
+        {
         }
 
         public async Task Start()

@@ -2,8 +2,10 @@
 
 namespace MyWebServer.Server.Routing
 {
-    interface IRoutingTable
+    public interface IRoutingTable
     {
-        void Map(string url, HttpResponse response);
+        IRoutingTable Map(string url, HttpMethod method, HttpResponse response);
+
+        IRoutingTable MapGet(string url, HttpResponse response);
     }
 }

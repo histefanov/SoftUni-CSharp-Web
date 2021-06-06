@@ -62,13 +62,10 @@ namespace MyWebServer.Server.Http
                         (new[] { ":" },
                         StringSplitOptions.None);
 
-                    var header = new HttpHeader
-                    {
-                        Name = headerTokens[0],
-                        Value = headerTokens[1].Trim()
-                    };
+                    var headerName = headerTokens[0];
+                    var headerValue = headerTokens[1].Trim();
 
-                    headerCollection.Add(header);
+                    headerCollection.Add(headerName, headerValue);
                 }
             }
 
