@@ -9,7 +9,9 @@ namespace MyWebServer.Server.Http
     {
         public HttpMethod Method { get; private set; }
 
-        public string Url { get; private set; }
+        public string Path { get; private set; }
+
+        public Dictionary<string, string> Query { get; private set; }
 
         public HttpHeaderCollection Headers { get; private set; }
 
@@ -19,10 +21,12 @@ namespace MyWebServer.Server.Http
         {
             var lines = request.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            var firstLine = lines.First().Split(new[] { " " }, StringSplitOptions.None);
+            var firstLine = lines.First().Split();
 
             var method = ParseHttpMethod(firstLine[0]);
-            var url = firstLine[1];
+
+            var (path, query) = ParseUrl(firstLine[1]);           
+
             var headerCollection = ParseHttpHeaderCollection(lines.Skip(1));
 
             var bodyLines = lines.Skip(headerCollection.Count + 2).ToArray();
@@ -32,7 +36,8 @@ namespace MyWebServer.Server.Http
             return new HttpRequest
             {
                 Method = method,
-                Url = url,
+                Path = path,
+                Query = query,
                 Headers = headerCollection,
                 Body = body
             };
@@ -58,9 +63,7 @@ namespace MyWebServer.Server.Http
             {
                 if (!String.IsNullOrWhiteSpace(headerLine))
                 {
-                    var headerTokens = headerLine.Split
-                        (new[] { ":" },
-                        StringSplitOptions.None);
+                    var headerTokens = headerLine.Split(':');
 
                     var headerName = headerTokens[0];
                     var headerValue = headerTokens[1].Trim();
@@ -70,6 +73,36 @@ namespace MyWebServer.Server.Http
             }
 
             return headerCollection;
+        }
+
+        private static (string, Dictionary<string, string>) ParseUrl(string url)
+        {
+            var urlParts = url.Split('?');
+
+            var path = urlParts[0];
+
+            var query = urlParts.Length > 1
+                ? ParseQuery(urlParts[1])
+                : new Dictionary<string, string>();  
+
+            return (path, query);
+        }
+
+        private static Dictionary<string, string> ParseQuery(string qString)
+        {
+            var query = new Dictionary<string, string>();
+
+            foreach (var item in qString.Split('&'))
+            {
+                var kvp = item.Split(new[] { '=' }, 2);
+
+                if (kvp.Length == 2)
+                {
+                    query.Add(kvp[0], kvp[1]);
+                }
+            }
+
+            return query;
         }
     }
 }

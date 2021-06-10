@@ -21,43 +21,40 @@ namespace MyWebServer.Server.Routing
         }
 
         public IRoutingTable Map(
-            string url, 
-            HttpMethod method, 
+            HttpMethod method,
+            string path,
             HttpResponse response)
         {
-            Guard.AgainstNull(url);
-            Guard.AgainstNull(method);
-            Guard.AgainstNull(response);
+            Guard.AgainstNull(path, nameof(path));
+            Guard.AgainstNull(response, nameof(response));
 
-            this.routes[method][url] = response;
+            this.routes[method][path] = response;
 
             return this;
         }
 
         public IRoutingTable MapGet(
-            string url, 
+            string path,
             HttpResponse response)
-        {
-            Guard.AgainstNull(url, nameof(url));
-            Guard.AgainstNull(response, nameof(response));
+            => this.Map(HttpMethod.Get, path, response);
 
-            this.routes[HttpMethod.Get][url] = response;
-
-            return this;
-        }
+        public IRoutingTable MapPost(
+            string path,
+            HttpResponse response)
+            => this.Map(HttpMethod.Post, path, response);
 
         public HttpResponse MatchRequest(HttpRequest request)
         {
             var requestMethod = request.Method;
-            var requestUrl = request.Url;
+            var requestPath = request.Path;
 
             if (!this.routes.ContainsKey(requestMethod)
-                || !this.routes[requestMethod].ContainsKey(requestUrl))
+                || !this.routes[requestMethod].ContainsKey(requestPath))
             {
                 return new NotFoundResponse();
             }
 
-            return this.routes[requestMethod][requestUrl];
+            return this.routes[requestMethod][requestPath];
         }
     }
 }
