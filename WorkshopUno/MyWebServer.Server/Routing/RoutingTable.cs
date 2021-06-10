@@ -73,5 +73,11 @@ namespace MyWebServer.Server.Routing
 
             return responseFunction(request);
         }
+
+        public IRoutingTable MapGet<TController>(string path, Func<Controller, HttpResponse> controllerFunction) 
+            where TController : Controller
+        {
+            throw new NotImplementedException();
+        }
     }
 }
