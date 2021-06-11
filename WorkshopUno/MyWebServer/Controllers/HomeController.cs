@@ -12,5 +12,7 @@ namespace MyWebServer.Controllers
         }
 
         public HttpResponse Index() => Text("Hello from 61 blok");
+
+        public HttpResponse ToYoutube() => Redirect("https://youtube.com");
     }
 }

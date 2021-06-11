@@ -11,18 +11,12 @@ namespace MyWebServer.Controllers
         {
         }
 
-        public HttpResponse Dogs()
-        {
-            const string nameKey = "name";
-            var query = this.Request.Query;
-
-            var dogName = query.ContainsKey(nameKey) ? query[nameKey] : "the dogs";
-
-            var result = $"<h1>Hello from {dogName}</h1>";
-
-            return Html(result);
-        }
-
         public HttpResponse Cats() => Html($"<h1>Hello from the cats!</h1>");
+
+        public HttpResponse Dogs() => View("Animals/Dogs");
+
+        public HttpResponse GuineaPigs() => View("GuineaPigs");
+
+        public HttpResponse Harambe() => View();
     }
 }

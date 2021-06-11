@@ -10,7 +10,9 @@
     {
         public static async Task Main()
             => await new MyHttpServer(routes => routes
+                .MapGet<HumansController>("/shinobis", c => c.Shinobis())
                 .MapGet<HomeController>("/", c => c.Index())
+                .MapGet<HomeController>("/youtube", c => c.ToYoutube())
                 .MapGet<AnimalsController>("/dogs", c => c.Dogs())
                 .MapGet<AnimalsController>("/cats", c => c.Cats()))
             .Start();

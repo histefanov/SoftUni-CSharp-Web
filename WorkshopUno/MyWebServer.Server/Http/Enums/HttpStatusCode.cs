@@ -8,6 +8,7 @@ namespace MyWebServer.Server.Http
     {
         OK = 200,
         BadRequest = 400,
+        Found = 302,
         NotFound = 404
     }
 }
