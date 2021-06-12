@@ -2,6 +2,8 @@
 using MyWebServer.Server.Responses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace MyWebServer.Server
@@ -22,10 +24,10 @@ namespace MyWebServer.Server
         protected HttpResponse Redirect(string location)
             => new RedirectResponse(location);
 
-        protected HttpResponse View()
-            => null;
+        protected HttpResponse View([CallerMemberName] string viewName = "")
+            => new ViewResponse(viewName, this.GetControllerName());
 
-        protected HttpResponse View(string view)
-            => new ViewResponse(view);
+        private string GetControllerName()
+            => this.GetType().Name.Replace(nameof(Controller), string.Empty);
     }
 }
