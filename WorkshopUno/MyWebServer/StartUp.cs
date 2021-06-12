@@ -15,8 +15,9 @@
                 .MapGet<AnimalsController>("/harambe", c => c.Harambe())
                 .MapGet<HomeController>("/", c => c.Index())
                 .MapGet<HomeController>("/youtube", c => c.ToYoutube())
-                //.MapGet<AnimalsController>("/dogs", c => c.Dogs())
-                .MapGet<AnimalsController>("/cats", c => c.Cats()))
+                .MapGet<AnimalsController>("/dogs", c => c.Dogs())
+                .MapGet<AnimalsController>("/cats", c => c.Cats())
+                .MapGet<CatsController>("/cats/create", c => c.Create()))
             .Start();
     }
 }
