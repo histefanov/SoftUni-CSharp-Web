@@ -11,9 +11,11 @@ namespace MyWebServer.Server.Http
 
         public string Path { get; private set; }
 
-        public Dictionary<string, string> Query { get; private set; }
+        public IReadOnlyDictionary<string, string> Query { get; private set; }
 
-        public HttpHeaderCollection Headers { get; private set; }
+        public IReadOnlyDictionary<string, HttpHeader> Headers { get; private set; }
+
+        public IReadOnlyDictionary<string, string> Form { get; private set; }
 
         public string Body { get; private set; }
 
@@ -25,22 +27,37 @@ namespace MyWebServer.Server.Http
 
             var method = ParseHttpMethod(firstLine[0]);
 
-            var (path, query) = ParseUrl(firstLine[1]);           
+            var (path, query) = ParseUrl(firstLine[1]);
 
-            var headerCollection = ParseHttpHeaderCollection(lines.Skip(1));
+            var headers = ParseHttpHeaderCollection(lines.Skip(1));
 
-            var bodyLines = lines.Skip(headerCollection.Count + 2).ToArray();
+            var bodyLines = lines.Skip(headers.Count + 2).ToArray();
 
             var body = string.Join(Environment.NewLine, bodyLines);
+
+            var form = ParseForm(headers, body);
 
             return new HttpRequest
             {
                 Method = method,
                 Path = path,
                 Query = query,
-                Headers = headerCollection,
+                Headers = headers,
                 Body = body
             };
+        }
+
+        private static Dictionary<string, string> ParseForm(Dictionary<string, HttpHeader> headers, string body)
+        {
+            var result = new Dictionary<string, string>();
+
+            if (headers.ContainsKey(HttpHeader.ContentType)
+                && headers[HttpHeader.ContentType].Value == HttpContentType.FormUrlEncoded)
+            {
+                result = ParseQuery(body);
+            }
+
+            return result;
         }
 
         private static HttpMethod ParseHttpMethod(string method)
@@ -55,9 +72,9 @@ namespace MyWebServer.Server.Http
             }
         }
 
-        private static HttpHeaderCollection ParseHttpHeaderCollection(IEnumerable<string> headerLines)
+        private static Dictionary<string, HttpHeader> ParseHttpHeaderCollection(IEnumerable<string> headerLines)
         {
-            var headerCollection = new HttpHeaderCollection();
+            var headerCollection = new Dictionary<string, HttpHeader>();
 
             foreach (var headerLine in headerLines)
             {
@@ -68,7 +85,7 @@ namespace MyWebServer.Server.Http
                     var headerName = headerTokens[0];
                     var headerValue = headerTokens[1].Trim();
 
-                    headerCollection.Add(headerName, headerValue);
+                    headerCollection.Add(headerName, new HttpHeader(headerName, headerValue));
                 }
             }
 
@@ -83,7 +100,7 @@ namespace MyWebServer.Server.Http
 
             var query = urlParts.Length > 1
                 ? ParseQuery(urlParts[1])
-                : new Dictionary<string, string>();  
+                : new Dictionary<string, string>();
 
             return (path, query);
         }
