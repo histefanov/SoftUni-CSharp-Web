@@ -43,7 +43,8 @@ namespace MyWebServer.Server.Http
                 Path = path,
                 Query = query,
                 Headers = headers,
-                Body = body
+                Body = body,
+                Form = form
             };
         }
 
@@ -74,22 +75,29 @@ namespace MyWebServer.Server.Http
 
         private static Dictionary<string, HttpHeader> ParseHttpHeaderCollection(IEnumerable<string> headerLines)
         {
-            var headerCollection = new Dictionary<string, HttpHeader>();
+            var headers = new Dictionary<string, HttpHeader>();
 
             foreach (var headerLine in headerLines)
             {
-                if (!String.IsNullOrWhiteSpace(headerLine))
+                if (headerLine == string.Empty)
                 {
-                    var headerTokens = headerLine.Split(':');
-
-                    var headerName = headerTokens[0];
-                    var headerValue = headerTokens[1].Trim();
-
-                    headerCollection.Add(headerName, new HttpHeader(headerName, headerValue));
+                    break;
                 }
+
+                var headerTokens = headerLine.Split(new[] { ':' }, 2);
+
+                if (headerTokens.Length != 2)
+                {
+                    throw new InvalidOperationException("Request is not valid.");
+                }
+
+                var headerName = headerTokens[0];
+                var headerValue = headerTokens[1].Trim();
+
+                headers.Add(headerName, new HttpHeader(headerName, headerValue));
             }
 
-            return headerCollection;
+            return headers;
         }
 
         private static (string, Dictionary<string, string>) ParseUrl(string url)
@@ -105,21 +113,11 @@ namespace MyWebServer.Server.Http
             return (path, query);
         }
 
-        private static Dictionary<string, string> ParseQuery(string qString)
-        {
-            var query = new Dictionary<string, string>();
-
-            foreach (var item in qString.Split('&'))
-            {
-                var kvp = item.Split(new[] { '=' }, 2);
-
-                if (kvp.Length == 2)
-                {
-                    query.Add(kvp[0], kvp[1]);
-                }
-            }
-
-            return query;
-        }
+        private static Dictionary<string, string> ParseQuery(string queryString)
+            => queryString
+                .Split('&')
+                .Select(part => part.Split('='))
+                .Where(part => part.Length == 2)
+                .ToDictionary(part => part[0], part => part[1]);
     }
 }

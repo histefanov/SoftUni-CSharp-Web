@@ -16,6 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Views\Animals\Cats.cshtml" />
 	  <None Remove="Views\Animals\Cats\Create.cshtml" />
 	  <None Remove="Views\Animals\GuineaPigs.cshtml" />
 	  <None Remove="Views\Animals\Rip\Harambe.cshtml" />

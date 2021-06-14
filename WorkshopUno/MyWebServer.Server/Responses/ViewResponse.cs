@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace MyWebServer.Server.Responses
@@ -10,13 +11,13 @@ namespace MyWebServer.Server.Responses
     {
         private const char PathSeparator = '/';
 
-        public ViewResponse(string viewName, string controllerName) 
+        public ViewResponse(string viewName, string controllerName, object model) 
             : base(HttpStatusCode.OK)
         {
-            this.GetHtml(viewName, controllerName);
+            this.GetHtml(viewName, controllerName, model);
         }
 
-        private void GetHtml(string viewName, string controllerName)
+        private void GetHtml(string viewName, string controllerName, object model)
         {
             if (!viewName.Contains(PathSeparator.ToString()))
             {
@@ -32,6 +33,11 @@ namespace MyWebServer.Server.Responses
 
             var viewContent = File.ReadAllText(viewPath);
 
+            if (model != null)
+            {
+                viewContent = this.PopulateModel(viewContent, model);
+            }
+
             this.PrepareContent(viewContent, HttpContentType.Html);
         }
 
@@ -44,6 +50,28 @@ namespace MyWebServer.Server.Responses
             this.PrepareContent(errorMessage, HttpContentType.TextPlain);
 
             return;
+        }
+
+        private string PopulateModel(string viewContent, object model)
+        {
+            const string OpeningBrackets = "{{";
+            const string ClosingBrackets = "}}";
+
+            var data = model
+                .GetType()
+                .GetProperties()
+                .Select(pr => new
+                {
+                    Name = pr.Name,
+                    Value = pr.GetValue(model)
+                });
+
+            foreach (var entry in data)
+            {
+                viewContent = viewContent.Replace($"{OpeningBrackets}{entry.Name}{ClosingBrackets}", entry.Value.ToString());
+            }
+
+            return viewContent;
         }
     }
 }
