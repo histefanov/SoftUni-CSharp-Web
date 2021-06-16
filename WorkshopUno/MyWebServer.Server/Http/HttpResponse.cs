@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyWebServer.Server.Http
 {
-    public abstract class HttpResponse
+    public class HttpResponse
     {
         public HttpResponse(HttpStatusCode statusCode)
         {
@@ -22,6 +22,22 @@ namespace MyWebServer.Server.Http
         public IDictionary<string, HttpCookie> Cookies { get; } = new Dictionary<string, HttpCookie>();
 
         public string Content { get; protected set; }
+
+        public void AddHeader(string name, string value)
+        {
+            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(value, nameof(value));
+
+            this.Headers.Add(name, new HttpHeader(name, value));
+        }
+
+        public void AddCookie(string name, string value)
+        {
+            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(value, nameof(value));
+
+            this.Cookies.Add(name, new HttpCookie(name, value));
+        }
 
         public override string ToString()
         {

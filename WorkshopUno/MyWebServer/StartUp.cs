@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
     using MyWebServer.Controllers;
     using MyWebServer.Server;
-    using MyWebServer.Server.Responses;
     using MyWebServer.Server.Routing;
 
     public class StartUp
@@ -18,7 +17,8 @@
                 .MapGet<AnimalsController>("/dogs", c => c.Dogs())
                 .MapGet<AnimalsController>("/cats", c => c.Cats())
                 .MapGet<CatsController>("/cats/create", c => c.Create())
-                .MapPost<CatsController>("/cats/save", c => c.Save()))
+                .MapPost<CatsController>("/cats/save", c => c.Save())
+                .MapGet<AccountController>("/Cookie", c => c.ActionWithCookies()))
             .Start();
     }
 }

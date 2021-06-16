@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyWebServer.Server.Responses
+namespace MyWebServer.Server.Results
 {
-    public class BadRequestResponse : HttpResponse
+    public class BadRequestResult : HttpResponse
     {
-        public BadRequestResponse() 
+        public BadRequestResult() 
             : base(HttpStatusCode.BadRequest)
         {
         }
