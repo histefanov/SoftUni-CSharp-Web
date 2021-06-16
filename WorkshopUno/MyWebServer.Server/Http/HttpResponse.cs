@@ -19,6 +19,8 @@ namespace MyWebServer.Server.Http
 
         public IDictionary<string, HttpHeader> Headers { get; } = new Dictionary<string, HttpHeader>();
 
+        public IDictionary<string, HttpCookie> Cookies { get; } = new Dictionary<string, HttpCookie>();
+
         public string Content { get; protected set; }
 
         public override string ToString()
