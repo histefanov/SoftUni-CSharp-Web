@@ -11,7 +11,7 @@ namespace MyWebServer.Server.Results
             : base(response)
         {
             this.StatusCode = HttpStatusCode.Found;
-            this.Headers.Add(HttpHeader.Location, new HttpHeader(HttpHeader.Location, location));
+            this.AddHeader(HttpHeader.Location, location);
         }
     }
 }

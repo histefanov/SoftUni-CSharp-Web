@@ -16,7 +16,19 @@ namespace MyWebServer.Controllers
 
         public ActionResult ActionWithCookies()
         {
+            const string CookieName = "My-Cookie";
 
+            if (this.Request.Cookies.ContainsKey(CookieName))
+            {
+                var cookie = this.Request.Cookies[CookieName];
+
+                return Text($"Cookies already exist - {cookie}");
+            }
+
+            this.Response.AddCookie("My-Cookie", "My-Value");
+            this.Response.AddCookie("My-Second-Cookie", "My-Value");
+
+            return Text("Cookies set! Hello from the cookie monster.");
         }
     }
 }
