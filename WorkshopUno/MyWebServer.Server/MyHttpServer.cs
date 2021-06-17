@@ -50,13 +50,20 @@ namespace MyWebServer.Server
 
                 var requestText = await this.ReadRequest(networkStream);
 
-                var request = HttpRequest.Parse(requestText);
+                try
+                {
+                    var request = HttpRequest.Parse(requestText);
 
-                var response = this.routingTable.ExecuteRequest(request);
+                    var response = this.routingTable.ExecuteRequest(request);
 
-                this.PrepareSession(request, response);
+                    this.PrepareSession(request, response);
 
-                await this.WriteResponse(networkStream, response);
+                    await this.WriteResponse(networkStream, response);
+                }
+                catch (Exception exception)
+                {
+                    await this.HandleError(networkStream, exception);
+                }               
 
                 connection.Close();
             }
@@ -65,6 +72,15 @@ namespace MyWebServer.Server
         private void PrepareSession(HttpRequest request, HttpResponse response)
         {
             response.AddCookie(HttpSession.SessionCookieName, request.Session.Id);
+        }
+
+        private async Task HandleError(NetworkStream networkStream, Exception exception)
+        {
+            var errorMessage = $"{exception.Message}{Environment.NewLine}{exception.StackTrace}";
+
+            var errorResponse = HttpResponse.ForError(errorMessage);
+
+            await this.WriteResponse(networkStream, errorResponse);
         }
 
         private async Task<string> ReadRequest(NetworkStream networkStream)

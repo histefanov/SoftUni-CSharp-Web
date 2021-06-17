@@ -14,11 +14,13 @@
                 .MapGet<AnimalsController>("/harambe", c => c.Harambe())
                 .MapGet<HomeController>("/", c => c.Index())
                 .MapGet<HomeController>("/youtube", c => c.ToYoutube())
+                .MapGet<HomeController>("/error", c => c.Error())
                 .MapGet<AnimalsController>("/dogs", c => c.Dogs())
                 .MapGet<AnimalsController>("/cats", c => c.Cats())
                 .MapGet<CatsController>("/cats/create", c => c.Create())
                 .MapPost<CatsController>("/cats/save", c => c.Save())
-                .MapGet<AccountController>("/cookies", c => c.ActionWithCookies()))
+                .MapGet<AccountController>("/cookies", c => c.ActionWithCookies())
+                .MapGet<AccountController>("/sessions", c => c.ActionWithSession()))
             .Start();
     }
 }
