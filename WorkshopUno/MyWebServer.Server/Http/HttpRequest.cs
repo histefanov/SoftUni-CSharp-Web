@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace MyWebServer.Server.Http
 {
     public class HttpRequest
     {
+        private static Dictionary<string, HttpSession> Sessions =
+            new Dictionary<string, HttpSession>();
+        
         public HttpMethod Method { get; private set; }
 
         public string Path { get; private set; }
@@ -16,6 +20,8 @@ namespace MyWebServer.Server.Http
         public IReadOnlyDictionary<string, HttpHeader> Headers { get; private set; }
         
         public IReadOnlyDictionary<string, HttpCookie> Cookies { get; private set; }
+
+        public HttpSession Session { get; private set; }
 
         public IReadOnlyDictionary<string, string> Form { get; private set; }
 
@@ -35,6 +41,8 @@ namespace MyWebServer.Server.Http
 
             var cookies = ParseCookies(headers);
 
+            var session = GetSession(cookies);
+
             var bodyLines = lines.Skip(headers.Count + 2).ToArray();
 
             var body = string.Join(Environment.NewLine, bodyLines);
@@ -48,11 +56,26 @@ namespace MyWebServer.Server.Http
                 Query = query,
                 Headers = headers,
                 Cookies = cookies,
+                Session = session,
                 Body = body,
                 Form = form
             };
         }
-      
+
+        private static HttpSession GetSession(Dictionary<string, HttpCookie> cookies)
+        {
+            var sessionId = cookies.ContainsKey(HttpSession.SessionCookieName)
+                ? cookies[HttpSession.SessionCookieName].Value
+                : Guid.NewGuid().ToString();
+
+                if (!Sessions.ContainsKey(sessionId))
+                {
+                    Sessions[sessionId] = new HttpSession(sessionId);
+                }
+
+                return Sessions[sessionId];
+        }
+
         private static Dictionary<string, string> ParseForm(Dictionary<string, HttpHeader> headers, string body)
         {
             var result = new Dictionary<string, string>();
@@ -74,7 +97,7 @@ namespace MyWebServer.Server.Http
                 case "POST": return HttpMethod.Post;
                 case "PUT": return HttpMethod.Put;
                 case "DELETE": return HttpMethod.Delete;
-                default: throw new InvalidOperationException($"Method {method} is not supported on this server");
+                default: return HttpMethod.Get; //throw new InvalidOperationException($"Method {method} is not supported on this server");
             }
         }
 

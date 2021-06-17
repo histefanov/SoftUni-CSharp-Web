@@ -54,10 +54,17 @@ namespace MyWebServer.Server
 
                 var response = this.routingTable.ExecuteRequest(request);
 
+                this.PrepareSession(request, response);
+
                 await this.WriteResponse(networkStream, response);
 
                 connection.Close();
             }
+        }
+
+        private void PrepareSession(HttpRequest request, HttpResponse response)
+        {
+            response.AddCookie(HttpSession.SessionCookieName, request.Session.Id);
         }
 
         private async Task<string> ReadRequest(NetworkStream networkStream)
