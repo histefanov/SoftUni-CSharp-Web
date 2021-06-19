@@ -44,29 +44,52 @@ namespace MyWebServer.Server
             
             while (true)
             {
-                var connection = await this.listener.AcceptTcpClientAsync();
-
-                var networkStream = connection.GetStream();
-
-                var requestText = await this.ReadRequest(networkStream);
-
-                try
+                _ = Task.Run(async () =>
                 {
-                    var request = HttpRequest.Parse(requestText);
+                    var connection = await this.listener.AcceptTcpClientAsync();
 
-                    var response = this.routingTable.ExecuteRequest(request);
+                    var networkStream = connection.GetStream();
 
-                    this.PrepareSession(request, response);
+                    var requestText = await this.ReadRequest(networkStream);
 
-                    await this.WriteResponse(networkStream, response);
-                }
-                catch (Exception exception)
-                {
-                    await this.HandleError(networkStream, exception);
-                }               
+                    try
+                    {
+                        var request = HttpRequest.Parse(requestText);
 
-                connection.Close();
+                        var response = this.routingTable.ExecuteRequest(request);
+
+                        this.PrepareSession(request, response);
+
+                        this.LogPipeline(request, response);
+
+                        await this.WriteResponse(networkStream, response);
+                    }
+                    catch (Exception exception)
+                    {
+                        await this.HandleError(networkStream, exception);
+                    }
+
+                    connection.Close();
+                });
             }
+        }
+
+        private void LogPipeline(HttpRequest request, HttpResponse response)
+        {
+            var separator = new string('-', 50);
+
+            var log = new StringBuilder();
+
+            log
+                .AppendLine()
+                .AppendLine(separator)
+                .AppendLine("REQUEST:")
+                .AppendLine(request.ToString())
+                .AppendLine()
+                .AppendLine("RESPONSE:")
+                .AppendLine(response.ToString());
+
+            Console.WriteLine(log.ToString());
         }
 
         private void PrepareSession(HttpRequest request, HttpResponse response)
