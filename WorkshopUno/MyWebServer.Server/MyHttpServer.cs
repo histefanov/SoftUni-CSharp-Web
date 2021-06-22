@@ -60,7 +60,7 @@ namespace MyWebServer.Server
 
                         this.PrepareSession(request, response);
 
-                        this.LogPipeline(request, response);
+                        this.LogPipeline(requestText, response.ToString());
 
                         await this.WriteResponse(networkStream, response);
                     }
@@ -74,7 +74,7 @@ namespace MyWebServer.Server
             }
         }
 
-        private void LogPipeline(HttpRequest request, HttpResponse response)
+        private void LogPipeline(string request, string response)
         {
             var separator = new string('-', 50);
 
@@ -84,17 +84,21 @@ namespace MyWebServer.Server
                 .AppendLine()
                 .AppendLine(separator)
                 .AppendLine("REQUEST:")
-                .AppendLine(request.ToString())
+                .AppendLine(request)
                 .AppendLine()
                 .AppendLine("RESPONSE:")
-                .AppendLine(response.ToString());
+                .AppendLine(response);
 
             Console.WriteLine(log.ToString());
         }
 
         private void PrepareSession(HttpRequest request, HttpResponse response)
         {
-            response.AddCookie(HttpSession.SessionCookieName, request.Session.Id);
+            if (request.Session.IsNew)
+            {
+                response.AddCookie(HttpSession.SessionCookieName, request.Session.Id);
+                request.Session.IsNew = false;
+            }           
         }
 
         private async Task HandleError(NetworkStream networkStream, Exception exception)

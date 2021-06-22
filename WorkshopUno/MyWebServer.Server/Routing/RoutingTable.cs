@@ -3,6 +3,7 @@ using MyWebServer.Server.Http;
 using MyWebServer.Server.Results;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MyWebServer.Server.Routing
 {
@@ -74,10 +75,32 @@ namespace MyWebServer.Server.Routing
             return responseFunction(request);
         }
 
-        public IRoutingTable MapGet<TController>(string path, Func<Controller, HttpResponse> controllerFunction) 
-            where TController : Controller
+        public IRoutingTable MapStaticFiles(string folder = Settings.StaticFilesRootFolder)
         {
-            throw new NotImplementedException();
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var staticFilesFolder = Path.Combine(currentDirectory, folder);
+            var staticFiles = Directory.GetFiles(
+                staticFilesFolder,
+                "*.*",
+                SearchOption.AllDirectories);
+
+            foreach (var file in staticFiles)
+            {
+                var relativePath = Path.GetRelativePath(staticFilesFolder, file);
+
+                var urlPath = "/" + relativePath.Replace("\\", "/");
+
+                this.MapGet(urlPath, request =>
+                {
+                    var content = File.ReadAllText(file);
+                    var contentType = Path.GetExtension(file);
+
+                    return new HttpResponse(HttpStatusCode.OK).
+                        SetContent(content, contentType);
+                });
+            }
+
+            return this;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace MyWebServer.Controllers
 
         public HttpResponse ToYoutube() => Redirect("https://youtube.com");
 
+        public HttpResponse StaticFiles() => View();
+
         public HttpResponse Error() => throw new InvalidOperationException("Invalid action!");
     }
 }

@@ -13,6 +13,10 @@
 		<Content Include="Views\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+
+		<Content Include="wwwroot\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -20,6 +24,7 @@
 	  <None Remove="Views\Animals\Cats\Create.cshtml" />
 	  <None Remove="Views\Animals\GuineaPigs.cshtml" />
 	  <None Remove="Views\Animals\Rip\Harambe.cshtml" />
+	  <None Remove="Views\Home\StaticFiles.cshtml" />
 	  <None Remove="Views\Humans\Shinobis.cshtml" />
 	</ItemGroup>
 
