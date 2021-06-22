@@ -17,7 +17,9 @@ namespace MyWebServer.Server
         {
             this.Request = request;
             this.Response = new HttpResponse(HttpStatusCode.OK);
-            this.User = new UserIdentity();
+            this.User = this.Request.Session.ContainsKey(UserSessionKey)
+                ? new UserIdentity { Id = this.Request.Session[UserSessionKey] }
+                : new UserIdentity();
         }
 
         protected HttpRequest Request { get; private set; }

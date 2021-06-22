@@ -40,7 +40,7 @@ namespace MyWebServer.Controllers
             return Text("User signed out!");
         }
 
-        public HttpResponse AuthorizedAction()
+        public HttpResponse AuthenticationCheck()
         {
             if (this.User.IsAuthenticated)
             {
@@ -50,7 +50,7 @@ namespace MyWebServer.Controllers
             return Text($"User is not authenticated.");
         }
 
-        public ActionResult ActionWithCookies()
+        public ActionResult CookiesCheck()
         {
             const string cookieName = "My-Cookie";
 
@@ -67,7 +67,7 @@ namespace MyWebServer.Controllers
             return Text("Cookies set! Hello from the cookie monster.");
         }
 
-        public ActionResult ActionWithSession()
+        public ActionResult SessionCheck()
         {
             const string currentDateKey = "CurrentDate";
 
