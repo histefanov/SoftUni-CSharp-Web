@@ -1,6 +1,7 @@
 ﻿using MyWebServer.Server.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MyWebServer.Server.Http
@@ -21,13 +22,14 @@ namespace MyWebServer.Server.Http
 
         public IDictionary<string, HttpCookie> Cookies { get; } = new Dictionary<string, HttpCookie>();
 
-        public string Content { get; protected set; }
+        public byte[] Content { get; protected set; }
+
+        public bool HasContent
+            => this.Content != null && this.Content.Any();
 
         public static HttpResponse ForError(string message)
             => new HttpResponse(HttpStatusCode.InternalServerError)
-            {
-                Content = message,
-            };
+                .SetContent(message, HttpContentType.TextPlain);
 
         public HttpResponse SetContent(string content, string contentType)
         {
@@ -38,6 +40,19 @@ namespace MyWebServer.Server.Http
 
             this.AddHeader(HttpHeader.ContentType, contentType);
             this.AddHeader(HttpHeader.ContentLength, contentLength);
+
+            this.Content = Encoding.UTF8.GetBytes(content);
+
+            return this;
+        }
+
+        public HttpResponse SetContent(byte[] content, string contentType)
+        {
+            Guard.AgainstNull(content, nameof(content));
+            Guard.AgainstNull(contentType, nameof(contentType));
+
+            this.AddHeader(HttpHeader.ContentType, contentType);
+            this.AddHeader(HttpHeader.ContentLength, content.Length.ToString());
 
             this.Content = content;
 
@@ -76,10 +91,9 @@ namespace MyWebServer.Server.Http
                 result.AppendLine($"{HttpHeader.SetCookie}: {cookie}");
             }
 
-            if (!String.IsNullOrEmpty(this.Content))
+            if (this.HasContent)
             {
-                result.AppendLine()
-                    .Append(this.Content);
+                result.AppendLine();
             }
             
             return result.ToString();

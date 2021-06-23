@@ -26,6 +26,8 @@
 	  <None Remove="Views\Animals\Rip\Harambe.cshtml" />
 	  <None Remove="Views\Home\StaticFiles.cshtml" />
 	  <None Remove="Views\Humans\Shinobis.cshtml" />
+	  <None Remove="wwwroot\css\newstyles.css" />
+	  <None Remove="wwwroot\img\cat.jpg" />
 	</ItemGroup>
 
 </Project>

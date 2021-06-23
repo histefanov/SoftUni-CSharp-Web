@@ -92,8 +92,9 @@ namespace MyWebServer.Server.Routing
 
                 this.MapGet(urlPath, request =>
                 {
-                    var content = File.ReadAllText(file);
-                    var contentType = Path.GetExtension(file);
+                    var content = File.ReadAllBytes(file);
+                    var fileExtension = Path.GetExtension(file).Trim('.');
+                    var contentType = HttpContentType.GetByFileExtension(fileExtension);
 
                     return new HttpResponse(HttpStatusCode.OK).
                         SetContent(content, contentType);

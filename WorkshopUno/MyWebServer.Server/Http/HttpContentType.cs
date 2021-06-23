@@ -10,11 +10,14 @@ namespace MyWebServer.Server.Http
         public const string Html = "text/html; charset=UTF-8";
         public const string FormUrlEncoded = "application/x-www-form-urlencoded";
 
-        public string GetByFileExtension(string fileExtension)
+        public static string GetByFileExtension(string fileExtension)
             => fileExtension switch
             {
                 "css" => "text/css",
                 "js" => "application/javascript",
+                "jpg" => "image/jpg",
+                "jpeg" => "image/jpg",
+                "png" => "image/png",
                 _ => TextPlain
             };
     }
