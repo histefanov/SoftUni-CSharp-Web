@@ -91,13 +91,14 @@ namespace MyWebServer.Server.Http
 
         private static HttpMethod ParseMethod(string method)
         {
-            switch (method.ToUpper())
+            try
             {
-                case "GET": return HttpMethod.Get;
-                case "POST": return HttpMethod.Post;
-                case "PUT": return HttpMethod.Put;
-                case "DELETE": return HttpMethod.Delete;
-                default: return HttpMethod.Get; //throw new InvalidOperationException($"Method {method} is not supported on this server");
+                return (HttpMethod)Enum.Parse(typeof(HttpMethod), method, true);
+            }
+            catch (Exception)
+            {
+                //throw new InvalidOperationException($"Method '{method}' is not supported");
+                return HttpMethod.Get;
             }
         }
 
