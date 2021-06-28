@@ -38,10 +38,10 @@
             {
                 StartPoint = model.StartPoint,
                 EndPoint = model.EndPoint,
-                DepartureTime = DateTime.Parse(model.Date),
+                DepartureTime = DateTime.Parse(model.DepartureTime),
                 Seats = model.Seats,
                 Description = model.Description,
-                ImagePath = model.CarImage,
+                ImagePath = model.ImagePath,
             };
 
             this.dbContext.Trips.Add(trip);
@@ -51,7 +51,17 @@
         }
 
         public HttpResponse All()
-        {       
+        {
+            var trips = this.dbContext.Trips
+                .Select(t => new TripListingViewModel
+                {
+                    StartPoint = t.StartPoint,
+                    EndPoint = t.EndPoint,
+                    DepartureTime = null, //?
+                    Seats = t.Seats,
+
+                });
+
             return View();
         }
     }

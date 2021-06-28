@@ -67,8 +67,7 @@
 
             var userId = this.dbContext
                 .Users
-                .Where(u => u.Username == model.Username &&
-                       u.Password == hashedPassword)
+                .Where(u => u.Username == model.Username && u.Password == hashedPassword)
                 .Select(u => u.Id)
                 .FirstOrDefault();
 

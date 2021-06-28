@@ -1,8 +1,12 @@
-﻿namespace SharedTrip.Models.Trips
-{
-    using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    public class AddTripFormModel
+namespace SharedTrip.Models.Trips
+{
+    public class TripListingViewModel
     {
         public string StartPoint { get; set; }
 
@@ -10,10 +14,6 @@
 
         public string DepartureTime { get; set; }
 
-        public string ImagePath { get; set; }
-
         public int Seats { get; set; }
-
-        public string Description { get; set; }
     }
 }

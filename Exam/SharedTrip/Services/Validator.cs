@@ -18,7 +18,7 @@
                 errors.Add($"Number of seats must be between {SeatsMinValue} and {SeatsMaxValue}.");
             }
 
-            if (!Regex.IsMatch(model.Date, DateTimeRegex))
+            if (!Regex.IsMatch(model.DepartureTime, DateTimeRegex))
             {
                 errors.Add($"Departure time should be in format 'DD.MM.YYYY HH:mm'.");
             }
@@ -28,9 +28,9 @@
                 errors.Add("Description can be up to 80 characters long.");
             }
 
-            if (Uri.IsWellFormedUriString(model.CarImage, UriKind.Absolute))
+            if (Uri.IsWellFormedUriString(model.ImagePath, UriKind.Absolute))
             {
-                errors.Add($"{model.CarImage} is not a valid URL.");
+                errors.Add($"{model.ImagePath} is not a valid URL.");
             }
 
             return errors;
