@@ -64,5 +64,10 @@
 
             return View();
         }
+
+        public HttpResponse Details()
+        {
+            return View();
+        }
     }
 }
