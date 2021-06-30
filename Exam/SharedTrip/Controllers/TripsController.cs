@@ -55,19 +55,34 @@
             var trips = this.dbContext.Trips
                 .Select(t => new TripListingViewModel
                 {
+                    Id = t.Id,
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
                     DepartureTime = null, //?
                     Seats = t.Seats,
+                })
+                .ToList();
 
-                });
-
-            return View();
+            return View(trips);
         }
 
         public HttpResponse Details()
         {
-            return View();
+            var tripId = this.Request.Query["tripId"];
+
+            var tripData = this.dbContext.Trips
+                .Where(t => t.Id == tripId)
+                .Select(t => new TripDetailsViewModel
+                {
+                    StartPoint = t.StartPoint,
+                    EndPoint = t.EndPoint,
+                    DepartureTime = t.DepartureTime,
+                    Seats = t.Seats,
+                    Description = t.Description
+                })
+                .FirstOrDefault();
+            
+            return View(tripData);
         }
     }
 }
