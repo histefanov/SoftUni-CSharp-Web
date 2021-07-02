@@ -28,10 +28,10 @@
                 errors.Add("Description can be up to 80 characters long.");
             }
 
-            if (Uri.IsWellFormedUriString(model.ImagePath, UriKind.RelativeOrAbsolute))
-            {
-                errors.Add($"{model.ImagePath} is not a valid URL.");
-            }
+            //if (Uri.IsWellFormedUriString(Uri.UnescapeDataString(model.ImagePath), UriKind.RelativeOrAbsolute))
+            //{
+            //    errors.Add($"{model.ImagePath} is not a valid URL.");
+            //}
 
             return errors;
         }

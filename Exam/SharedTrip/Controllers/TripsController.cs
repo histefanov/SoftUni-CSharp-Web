@@ -76,7 +76,7 @@
                 {
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
-                    DepartureTime = t.DepartureTime,
+                    DepartureTime = t.DepartureTime.ToString(),
                     Seats = t.Seats,
                     Description = t.Description
                 })
