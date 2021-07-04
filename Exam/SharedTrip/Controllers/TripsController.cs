@@ -7,6 +7,7 @@
     using SharedTrip.Models.Trips;
     using SharedTrip.Services;
     using System;
+    using System.Globalization;
     using System.Linq;
 
     public class TripsController : Controller
@@ -58,7 +59,7 @@
                     Id = t.Id,
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
-                    DepartureTime = null, //?
+                    DepartureTime = t.DepartureTime.ToString("G"),
                     Seats = t.Seats,
                 })
                 .ToList();
