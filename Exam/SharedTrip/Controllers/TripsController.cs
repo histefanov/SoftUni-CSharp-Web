@@ -59,7 +59,10 @@
                     Id = t.Id,
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
-                    DepartureTime = t.DepartureTime.ToString("G"),
+                    DepartureTime = 
+                        t.DepartureTime.ToString("dd.MM.yyyy") + 
+                        " г. " + 
+                        t.DepartureTime.ToString("HH:mm:ss"),
                     Seats = t.Seats,
                 })
                 .ToList();
@@ -77,9 +80,10 @@
                 {
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
-                    DepartureTime = t.DepartureTime.ToString(),
+                    DepartureTime = t.DepartureTime.ToString("dd.MM.yyyy HH:mm"),
                     Seats = t.Seats,
-                    Description = t.Description
+                    Description = t.Description,
+                    ImagePath = t.ImagePath
                 })
                 .FirstOrDefault();
             
