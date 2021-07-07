@@ -51,6 +51,7 @@
             return Redirect("/Trips/All");
         }
 
+        [Authorize]
         public HttpResponse All()
         {
             var trips = this.dbContext.Trips
@@ -70,6 +71,7 @@
             return View(trips);
         }
 
+        [Authorize]
         public HttpResponse Details()
         {
             var tripId = this.Request.Query["tripId"];
@@ -78,6 +80,7 @@
                 .Where(t => t.Id == tripId)
                 .Select(t => new TripDetailsViewModel
                 {
+                    Id = t.Id,
                     StartPoint = t.StartPoint,
                     EndPoint = t.EndPoint,
                     DepartureTime = t.DepartureTime.ToString("dd.MM.yyyy HH:mm"),
@@ -88,6 +91,30 @@
                 .FirstOrDefault();
             
             return View(tripData);
+        }
+
+        [Authorize]
+        public HttpResponse AddUserToTrip()
+        {
+            var tripId = this.Request.Query["tripId"];
+            var trip = this.dbContext.Trips.FirstOrDefault(x => x.Id == tripId);
+
+            if (this.dbContext.UserTrips.Any(x => x.Trip == trip))
+            {
+                return Redirect($"/Trips/Details?tripId={trip.Id}");
+            }
+
+            trip.UserTrips.Add(new UserTrip
+            {
+                TripId = tripId,
+                UserId = this.User.Id
+            });
+
+            trip.Seats--;
+
+            this.dbContext.SaveChanges();
+
+            return Redirect("/Trips/All");
         }
     }
 }

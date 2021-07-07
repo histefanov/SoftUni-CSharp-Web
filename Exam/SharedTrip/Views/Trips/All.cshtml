@@ -15,17 +15,20 @@
                 <tbody>
                     @foreach (var trip in Model)
                     {
-                        <tr>
-                            <th scope="row">@trip.StartPoint</th>
-                            <td>@trip.EndPoint</td>
-                            <td>@trip.DepartureTime</td>
-                            <td>@trip.Seats</td>
-                            <td>
-                                <div class="button-holder">
-                                    <a href="/Trips/Details?tripId=@trip.Id" class="btn btn-info text-uppercase">Info</a>
-                                </div>
-                            </td>
-                        </tr>
+                        @if (trip.Seats > 0)
+                        {
+                            <tr>
+                                <th scope="row">@trip.StartPoint</th>
+                                <td>@trip.EndPoint</td>
+                                <td>@trip.DepartureTime</td>
+                                <td>@trip.Seats</td>
+                                <td>
+                                    <div class="button-holder">
+                                        <a href="/Trips/Details?tripId=@trip.Id" class="btn btn-info text-uppercase">Info</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

@@ -81,6 +81,7 @@
             return Redirect("/Trips/All");
         }
 
+        [Authorize]
         public HttpResponse Logout()
         {
             this.SignOut();
