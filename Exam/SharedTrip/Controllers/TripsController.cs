@@ -99,7 +99,7 @@
             var tripId = this.Request.Query["tripId"];
             var trip = this.dbContext.Trips.FirstOrDefault(x => x.Id == tripId);
 
-            if (this.dbContext.UserTrips.Any(x => x.Trip == trip))
+            if (this.dbContext.UserTrips.Any(x => x.TripId == tripId && x.UserId == this.User.Id))
             {
                 return Redirect($"/Trips/Details?tripId={trip.Id}");
             }
